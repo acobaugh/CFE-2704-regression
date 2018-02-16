@@ -1,0 +1,4 @@
+{
+   "default:class_vars.thing2" : "value just for group_test",
+   "default:class_vars.thing1" : "global default value"
+}

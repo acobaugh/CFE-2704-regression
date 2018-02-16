@@ -1,0 +1,26 @@
+body common control {
+	inputs => {
+		"class_vars.cf"
+	};
+
+	bundlesequence => {
+		"class_vars",
+		"test"
+	};
+}
+
+bundle common g {
+	vars:
+		"class_vars" string => "${this.promise_dirname}/class_vars";
+}
+
+bundle agent test {
+	vars:
+		any::
+			"class_vars" data => variablesmatching_as_data("default:class_vars\.thing.*");
+			"class_vars_formatted" string => format("%S", class_vars);
+	reports:
+		any::
+			"${class_vars_formatted}";
+}
+		
