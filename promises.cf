@@ -1,10 +1,11 @@
 body common control {
 	inputs => {
-		"class_vars.cf"
+		"class_vars.cf",
+		"simplified.cf"
 	};
 
 	bundlesequence => {
-		"class_vars",
+		"simplified",
 		"test"
 	};
 }
@@ -17,7 +18,7 @@ bundle common g {
 bundle agent test {
 	vars:
 		any::
-			"class_vars" data => variablesmatching_as_data("default:class_vars\.thing.*");
+			"class_vars" data => variablesmatching_as_data("default:simplified.*");
 			"class_vars_formatted" string => format("%S", class_vars);
 	reports:
 		any::

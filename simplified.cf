@@ -1,0 +1,34 @@
+body common control {
+	bundlesequence => {
+		"simplified",
+		"test"
+	};
+}
+
+bundle agent test {
+	vars:
+		any::
+			"vars" data => variablesmatching_as_data("default:simplified.*");
+			"vars_formatted" string => format("%S", vars);
+	reports:
+		any::
+			"${vars_formatted}";
+}
+		
+bundle agent simplified {
+	vars:
+		any::
+			"one" data => "{\"thing1\": \"some value\"}";
+			"two" data => "{}";
+
+			"one" data => mergedata(
+				"one",
+				"two"
+			);
+			
+			"merged" data => @(one);
+	
+			"merged_keys" slist => getindices("merged");
+			"merged_keys_nested[$(merged_keys)]" string => canonify($(merged_keys));
+			"$(merged_keys_nested[$(merged_keys)])" data => @(merged[$(merged_keys)]);
+}

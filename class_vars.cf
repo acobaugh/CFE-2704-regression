@@ -1,3 +1,25 @@
+body common control {
+	bundlesequence => {
+		"class_vars",
+		"test"
+	};
+}
+
+bundle common g {
+	vars:
+		"class_vars" string => "${this.promise_dirname}/class_vars";
+}
+
+bundle agent test {
+	vars:
+		any::
+			"class_vars" data => variablesmatching_as_data("default:class_vars\.thing.*");
+			"class_vars_formatted" string => format("%S", class_vars);
+	reports:
+		any::
+			"${class_vars_formatted}";
+}
+		
 bundle agent class_vars {
 	vars:
 		any::
@@ -33,10 +55,10 @@ bundle agent class_vars {
 			"c_v_files_misc_filtered" slist => filter(".*/($(sys.fqhost)|any|group_.*)\.(json|yaml)", "c_v_files_misc", "true", "true", "1000");
 
 			# initialize the any/group/host merged data containers
-			"c_v_merged_any" data => "{}";
-			"c_v_merged_misc" data => "{}";
-			"c_v_merged_group" data => "{}";
-			"c_v_merged_host" data => "{}";
+			"c_v_merged_any" data => parsejson("{}");
+			"c_v_merged_misc" data => parsejson("{}");
+			"c_v_merged_group" data => parsejson("{}");
+			"c_v_merged_host" data => parsejson("{}");
 
 			# read in the group_* files and merge them
 			"c_v_merged_group" 
@@ -76,9 +98,9 @@ bundle agent class_vars {
 			"c_v_merged"
 				data => mergedata(
 					"c_v_merged_any",
-					"c_v_merged_misc",
-					"c_v_merged_group",
-					"c_v_merged_host"
+				#	"c_v_merged_misc",
+					"c_v_merged_group"
+				#	"c_v_merged_host"
 				);
 
 			# get top-level keys
